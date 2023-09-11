@@ -115,3 +115,113 @@ This code structure simplifies the handling of the HTTP request and its results,
 
 
 </details>
+
+
+-----
+
+
+<details>
+
+<summary>
+    Web scrapping doubt: We can't use Axios: use a headless browser or a different approach.
+</summary>
+
+
+```javascript
+const axios = require('axios');
+const cheerio = require('cheerio');
+
+console.log("Before");
+
+axios.get('https://www.google.com/search?q=worldometer+coronavirus&oq=world&aqs=chrome.4.69i57j0i67i650j0i131i433i512j46i131i433i512j0i67i650j69i65j69i61l2.4657j0j4&sourceid=chrome&ie=UTF-8')
+  .then(response => {
+    // Successful request
+    console.log('statusCode:', response.status);
+    // You can access the HTML content using response.data
+    handleHTML(response.data);
+  })
+  .catch(error => {
+    // Error handling
+    console.error('error:', error);
+  });
+
+function handleHTML(html) {
+    let selTool = cheerio.load(html);
+    let h1s = selTool("h1");
+    console.log(h1s.length);
+}
+
+console.log("After");
+```
+
+The issue you're facing is likely related to the way you're making the Axios request and handling the response in the callback function. You should use `axios.get` to make the GET request and then handle the response inside the `.then` block. Here's the corrected code:
+
+```javascript
+const axios = require('axios');
+const cheerio = require('cheerio');
+
+console.log("Before");
+
+axios.get('https://www.google.com/search?q=worldometer+coronavirus&oq=world&aqs=chrome.4.69i57j0i67i650j0i131i433i512j46i131i433i512j0i67i650j69i65j69i61l2.4657j0j4&sourceid=chrome&ie=UTF-8')
+  .then(response => {
+    // Successful request
+    console.log('statusCode:', response.status);
+    // You can access the HTML content using response.data
+    handleHTML(response.data);
+  })
+  .catch(error => {
+    // Error handling
+    console.error('error:', error);
+  });
+
+function handleHTML(html) {
+    let selTool = cheerio.load(html);
+    let h1s = selTool("h1");
+    console.log(h1s.length);
+}
+
+console.log("After");
+
+```
+
+In this corrected code:
+
+1. We use `axios.get` to make the GET request, and inside the `.then` block, we handle the response, including parsing it with Cheerio.
+
+2. The `handleHTML` function is called with `response.data` to parse and manipulate the HTML content.
+
+3. The length of `<h1>` elements is logged correctly within the `handleHTML` function.
+
+This should resolve the issue, and you should see the correct length of `<h1>` elements printed to the console.
+
+
+I apologize for the confusion earlier. Google's search results page is likely dynamically generated using JavaScript, which means that when you make a simple HTTP request using Axios, you may not get the fully rendered page. To scrape content from pages like this, you would typically need a headless browser or a different approach.
+
+If you want to scrape data from such a page, you might consider using a tool like Puppeteer (a headless Chrome browser controlled via Node.js) or utilizing an API if one is available for the website you are trying to extract data from.
+
+Here's an example using Puppeteer to scrape the Google search page for `<h1>` elements:
+
+```javascript
+const puppeteer = require('puppeteer');
+
+(async () => {
+  console.log("Before");
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  await page.goto('https://www.google.com/search?q=worldometer+coronavirus&oq=world&aqs=chrome.4.69i57j0i67i650j0i131i433i512j46i131i433i512j0i67i650j69i65j69i61l2.4657j0j4&sourceid=chrome&ie=UTF-8');
+
+  const h1s = await page.$$("h1");
+  console.log(h1s.length);
+
+  await browser.close();
+
+  console.log("After");
+})();
+```
+
+This code uses Puppeteer to launch a headless browser, navigate to the Google search page, and then count the number of `<h1>` elements on the page. Please make sure to install Puppeteer using `npm install puppeteer` before running this code.
+
+    
+</details>
