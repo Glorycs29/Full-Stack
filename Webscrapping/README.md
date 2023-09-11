@@ -1,5 +1,8 @@
+<details>
+    
+<summary>axios-modulue-doubt</summary>
 
-
+    
 ```markdown
 ## Step 1: Install Axios
 
@@ -109,3 +112,6 @@ In this simplified code:
 3. We use `await` to wait for asynchronous operations to complete, making the code more readable and avoiding the need for `.then`.
 
 This code structure simplifies the handling of the HTTP request and its results, making it easier to understand and maintain.
+
+
+</details>
